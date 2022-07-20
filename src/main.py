@@ -75,7 +75,7 @@ def delete_user(user_id):
 
     return jsonify("deleted"), 200
 
-@app.route('/People', methods=['GET'])
+@app.route('/people', methods=['GET'])
 def handle_people():
 
     people = People.query.all()
@@ -83,7 +83,7 @@ def handle_people():
 
     return jsonify(all_people), 200
 
-@app.route('/People', methods=['POST'])
+@app.route('/people', methods=['POST'])
 def create_person():
 
     request_body_user = request.get_json()
@@ -92,19 +92,14 @@ def create_person():
     db.session.commit()
     return jsonify(request_body_user), 200
 
-# @app.route('/People/<int:person_id>', methods=['GET'])
+# @app.route('/people/<int:person_id>', methods=['GET'])
 # def get_person(person_id):
 #     request_body_user = request.get_json()
 #     person = People.query.get(person_id)
-
-
-#     if person is None:
-#         raise APIException("person does not exist", status_code=404)
-#     if "id" in request_body_user:
-#         person.id = body["id"]
 #     db.session.commit()
+    
 
-#     return jsonify(person), 200
+#     return(jsonify(person))
 
 
 
