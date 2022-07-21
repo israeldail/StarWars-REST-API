@@ -53,6 +53,8 @@ class Planets(db.Model):
         return {
             "id": self.id,
             "planet_name": self.planet_name,
+            "population": self.population,
+            "planet mass": self.planet_mass
             # do not serialize the password, its a security breach
         }
 

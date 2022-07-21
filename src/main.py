@@ -10,6 +10,7 @@ from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User
 from models import db, People
+from models import db, Planets
 #from models import Person
 
 app = Flask(__name__)
@@ -92,16 +93,46 @@ def create_person():
     db.session.commit()
     return jsonify(request_body_user), 200
 
-# @app.route('/people/<int:person_id>', methods=['GET'])
-# def get_person(person_id):
-#     request_body_user = request.get_json()
-#     person = People.query.get(person_id)
-#     db.session.commit()
+@app.route('/people/<int:person_id>', methods=['GET'])
+def get_person(person_id):
+    person = People.query.get(person_id)
+    if person is None:
+        raise APIException("user not found", status_code=404)
+    one_person = person.serialize()
+
     
+    db.session.commit()
 
-#     return(jsonify(person))
+    return(jsonify(one_person)), 200
 
+@app.route('/planets', methods=['GET'])
+def handle_planets():
 
+    planets = Planets.query.all()
+    all_planets = list(map(lambda x: x.serialize(), planets))
+
+    return jsonify(all_planets), 200
+
+@app.route('/planets', methods=['POST'])
+def create_planet():
+
+    request_body_user = request.get_json()
+    new_planet = Planets(planet_name=request_body_user["planet_name"], population=request_body_user["population"], planet_mass = request_body_user["planet_mass"])
+    db.session.add(new_planet)
+    db.session.commit()
+    return jsonify(request_body_user), 200
+
+@app.route('/planets/<int:planet_id>', methods=['GET'])
+def get_planet(planet_id):
+    planet = Planets.query.get(planet_id)
+    if planet is None:
+        raise APIException("planet not found", status_code=404)
+    one_planet = planet.serialize()
+
+    
+    db.session.commit()
+
+    return(jsonify(one_planet)), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
