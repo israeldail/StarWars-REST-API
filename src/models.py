@@ -2,18 +2,19 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=True, default=True)
-    #user can have many favorites
+    is_active = db.Column(db.Boolean(), unique=False,
+                          nullable=True, default=True)
+    # user can have many favorites
     user_id = db.Column(db.Integer, db.ForeignKey('favorites.id'))
-    
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.first_name
 
     def serialize(self):
         return {
@@ -21,6 +22,24 @@ class User(db.Model):
             "email": self.email,
             "first_name": self.first_name
             # do not serialize the password, its a security breach
+        }
+
+class Favorites(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.Integer, unique=False)
+    person_id = db.Column(db.Integer, unique=False)
+    planet_id = db.Column(db.Integer, unique=False)
+    favorites = db.relationship('User', backref='userfavorite')
+
+    def __repr__(self):
+        return '<Favorites %r>' % self.id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "person_id": self.person_id,
+            "planet_id": self.planet_id,
         }
 
 class People(db.Model):
@@ -43,6 +62,7 @@ class People(db.Model):
             # do not serialize the password, its a security breach
         }
 
+
 class Planets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     planet_name = db.Column(db.String(80), unique=True, nullable=False)
@@ -61,8 +81,4 @@ class Planets(db.Model):
             # do not serialize the password, its a security breach
         }
 
-class Favorites(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    person_id = db.Column(db.Integer, unique=False)
-    planet_id = db.Column(db.Integer, unique=False)
-    favorites = db.relationship('User', backref='userfavorite')
+
