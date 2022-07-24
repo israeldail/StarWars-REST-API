@@ -136,6 +136,12 @@ def get_planet(planet_id):
     return(jsonify(one_planet)), 200
 
 
+@app.route('/user/favorites', methods=['GET'])
+def get_favorites():
+    favorites = Favorites.query.all()
+    all_favorites = list(map(lambda x: x.serialize(), favorites))
+
+    return jsonify(all_favorites), 200
 
 
 # this only runs if `$ python src/main.py` is executed

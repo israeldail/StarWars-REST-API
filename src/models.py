@@ -10,8 +10,7 @@ class User(db.Model):
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False,
                           nullable=True, default=True)
-    # user can have many favorites
-    user_id = db.Column(db.Integer, db.ForeignKey('favorites.id'))
+    favorites = db.relationship('Favorites')
 
     def __repr__(self):
         return '<User %r>' % self.first_name
@@ -26,10 +25,9 @@ class User(db.Model):
 
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.Integer, unique=False)
     person_id = db.Column(db.Integer, unique=False)
     planet_id = db.Column(db.Integer, unique=False)
-    favorites = db.relationship('User', backref='userfavorite')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return '<Favorites %r>' % self.id
@@ -37,7 +35,6 @@ class Favorites(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "username": self.username,
             "person_id": self.person_id,
             "planet_id": self.planet_id,
         }
